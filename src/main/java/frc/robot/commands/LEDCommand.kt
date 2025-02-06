@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.subsystems.CANdleSubsystem
 
 /** An example command that uses an example subsystem.  */
-class LEDCommand : Command()
+class LEDCommand(var brightness:Double) : Command()
 {
     init
     {
@@ -16,11 +16,13 @@ class LEDCommand : Command()
     {
         // Called when the command is initially scheduled.
         // Here we show an example of calling an action on the ExampleSubsystem
-        CANdleSubsystem.CANdleBlue()
+
     }
 
     override fun execute()
     {
+
+        CANdleSubsystem.changeBrightness(brightness)
         // Called every time the scheduler runs while the command is scheduled.
     }
 

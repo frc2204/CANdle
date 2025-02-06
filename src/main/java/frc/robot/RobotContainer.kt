@@ -1,10 +1,14 @@
 package frc.robot
 
 import com.ctre.phoenix.led.CANdle
+import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.Autos
+import frc.robot.commands.LEDCommand
+import frc.robot.subsystems.CANdleSubsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,17 +23,18 @@ import frc.robot.commands.Autos
  */
 object RobotContainer
 {
+    private val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
     val candle = CANdle(0)
-    init
-    {
+    init {
         configureBindings()
         // Reference the Autos object so that it is initialized, placing the chooser on the dashboard
         Autos
-        candle.setLEDs(255,0,0)
+        CANdleSubsystem.candleConfig()
+        candle.setLEDs(30, 100, 137)
     }
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private val driverController = CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT)
+
 
     /**
      * Use this method to define your `trigger->command` mappings. Triggers can be created via the
@@ -40,6 +45,12 @@ object RobotContainer
      */
     private fun configureBindings()
     {
-
+        while(driverController.leftY!=0.0){
+            Commands.runOnce(
+                CANdleSubsystem::changeBrightness(()-), CANdleSubsystem
+            )
+        }
+        Trigger(driverController.a().whileTrue(CANdleSubsystem.CANdleBlue()))
+        Trigger(driverController.b().whileTrue(CANdleSubsystem.candleGreen()))
     }
 }

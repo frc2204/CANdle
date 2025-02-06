@@ -1,6 +1,7 @@
 package frc.robot.subsystems
 
 import com.ctre.phoenix.led.CANdle
+import com.ctre.phoenix.led.CANdleConfiguration
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.Command
 
@@ -9,6 +10,13 @@ import edu.wpi.first.wpilibj2.command.Command
 object CANdleSubsystem : SubsystemBase()
 {
     val candle = CANdle(0)
+    fun candleConfig(){
+        val config = CANdleConfiguration()
+        config.v5Enabled = true
+        config.statusLedOffWhenActive = false
+        config.brightnessScalar = 1.0
+        candle.configAllSettings(config)
+    }
     /**
      * Example command factory method.
      *
@@ -26,6 +34,9 @@ object CANdleSubsystem : SubsystemBase()
     fun turnOff(): Boolean {
         // Query some boolean state, such as a digital sensor.
         return true
+    }
+    fun changeBrightness(brightness: Double){
+        candle.configBrightnessScalar(brightness)
     }
 
     override fun periodic()
