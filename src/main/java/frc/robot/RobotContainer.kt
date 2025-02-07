@@ -1,14 +1,20 @@
 package frc.robot
 
 import com.ctre.phoenix.led.CANdle
+import com.ctre.phoenix.led.FireAnimation
+import com.ctre.phoenix.led.LarsonAnimation
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.Constants.OperatorConstants
+import frc.robot.commands.AnimationCommand
 import frc.robot.commands.Autos
+import frc.robot.commands.IncrementCommand
 import frc.robot.commands.LEDCommand
 import frc.robot.subsystems.CANdleSubsystem
+import java.util.logging.Logger
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +36,7 @@ object RobotContainer
         // Reference the Autos object so that it is initialized, placing the chooser on the dashboard
         Autos
         CANdleSubsystem.candleConfig()
+        CANdleSubsystem.receiveController(driverController)
         candle.setLEDs(30, 100, 137)
     }
 
@@ -45,11 +52,8 @@ object RobotContainer
      */
     private fun configureBindings()
     {
-        while(driverController.leftY!=0.0){
-            Commands.runOnce(
-                CANdleSubsystem::changeBrightness(()-), CANdleSubsystem
-            )
-        }
+       CANdleSubsystem.defaultCommand = AnimationCommand()
+        Trigger(driverController.y().whileTrue(IncrementCommand()))
         Trigger(driverController.a().whileTrue(CANdleSubsystem.CANdleBlue()))
         Trigger(driverController.b().whileTrue(CANdleSubsystem.candleGreen()))
     }
