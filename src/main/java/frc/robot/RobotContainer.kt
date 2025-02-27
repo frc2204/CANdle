@@ -1,13 +1,13 @@
 package frc.robot
 
 import com.ctre.phoenix.led.CANdle
-import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.Commands
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.Constants.OperatorConstants
 import frc.robot.commands.Autos
-import frc.robot.commands.LEDCommand
+import frc.robot.commands.LEDCycleCommand
 import frc.robot.subsystems.CANdleSubsystem
 
 /**
@@ -47,9 +47,10 @@ object RobotContainer
     {
         while(driverController.leftY!=0.0){
             Commands.runOnce(
-                CANdleSubsystem::changeBrightness(()-), CANdleSubsystem
+                {CANdleSubsystem.changeBrightness(driverController.leftY)}, CANdleSubsystem
             )
         }
+        CANdleSubsystem.defaultCommand = LEDCycleCommand()
         Trigger(driverController.a().whileTrue(CANdleSubsystem.CANdleBlue()))
         Trigger(driverController.b().whileTrue(CANdleSubsystem.candleGreen()))
     }
